@@ -6,10 +6,11 @@
     "dev:server": "cd server && npm run dev",
     "dev": "npm run dev:server",
     "install:all": "npm install && cd server && npm install",
-    "build": "npm run build:css",
+    "build": "npm run build:css && node scripts/prepare-public.js",
     "build:css": "tailwindcss -i ./input.css -o ./style.css --minify",
     "watch:css": "tailwindcss -i ./input.css -o ./style.css --watch",
-    "generate:vapid": "node generate_vapid_keys.js"
+    "generate:vapid": "node generate_vapid_keys.js",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",

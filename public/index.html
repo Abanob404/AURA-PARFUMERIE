@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="dark" lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+    <meta name="description" content="AURA Parfumerie - عطور مختارة بروح عصرية، نفحات فاخرة وتجربة شراء أنيقة.">
+    <meta property="og:title" content="AURA Parfumerie - Find Your Signature">
+    <meta property="og:description" content="اكتشف مجموعتنا من العطور الرجالية والنسائية واليونيسكس والعود الشرقي.">
+    <meta property="og:image" content="logo.webp">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#12100e">
+    <link rel="canonical" href="https://aura-perfumes.example/">
+    <title>AURA Parfumerie | Find Your Signature</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://res.cloudinary.com">
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="perfume-theme.css">
+<!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome (Non-Blocking) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <!-- Material Icons (Non-Blocking) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <!-- Cairo font is loaded from Google Fonts -->
+    
+    <!-- Theme Toggle Script to prevent FOUT/Flash -->
+    <script>
+        if (localStorage.getItem('theme') === 'light') { 
+            document.documentElement.classList.remove('dark');
+        } else { 
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"AURA Parfumerie","url":"https://aura-perfumes.example/","logo":"https://aura-perfumes.example/logo.webp","email":"hello@auraperfumes.example","address":{"@type":"PostalAddress","addressLocality":"Cairo","addressCountry":"EG"},"sameAs":[]}</script>
+</head>
+
+<body data-page="home" class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary/30"
+    dir="rtl">
+
+    <!-- TopNavBar -->
+    <header
+        class="site-header bg-white/90 shadow-sm dark:bg-slate-900/90 dark:shadow-none backdrop-blur-xl text-primary font-body-md text-body-md fixed top-0 w-full z-50 border-b border-primary/20">
+        <div class="flex items-center justify-between px-4 md:px-gutter py-3 w-full max-w-container-max mx-auto">
+            <div class="flex items-center gap-4 md:gap-8">
+                <a class="flex items-center gap-2" href="/">
+                    <span class="perfume-wordmark" aria-label="AURA Parfumerie"><span class="perfume-wordmark__seal">A</span><span class="perfume-wordmark__copy"><strong>AURA</strong><small>PARFUMERIE</small></span></span>
+                </a>
+                <div class="hidden md:flex items-center relative w-64 lg:w-96">
+                    <svg class="absolute right-3 text-on-surface-variant w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <!-- تم إضافة الـ ID ودالة البحث هنا -->
+                    <input id="searchInput" oninput="searchProducts()"
+                        class="w-full bg-surface-container-high border border-outline-variant rounded-full py-2 pr-10 pl-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-sm"
+                        placeholder="ابحث باسم العطر، الماركة أو النوتة..." type="text">
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center gap-6">
+                <a class="text-primary border-b-2 border-primary pb-1 transition-all duration-300 text-base font-bold"
+                    href="/">الرئيسية</a>
+                <a class="text-on-surface-variant hover:text-primary transition-all duration-300 text-base font-bold"
+                    href="/services">تجربة AURA</a>
+                <a class="text-on-surface-variant hover:text-primary transition-all duration-300 text-base font-bold"
+                    href="/products">العطور</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" class="p-2 rounded-full bg-surface-container-high border border-outline-variant text-on-surface hover:text-primary hover:border-primary/50 transition-all shadow-sm" aria-label="Toggle Theme">
+                    <!-- Sun Icon (shown in dark mode) -->
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <!-- Moon Icon (shown in light mode) -->
+                    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                <a href="#!" onclick="return false" aria-disabled="true" class="btn-modern-green"
+                    aria-label="تواصل معنا عبر واتساب">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                    </svg>
+                    <span class="hidden sm:inline">تواصل معنا</span>
+                </a>
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden flex items-center justify-center p-2 text-sky-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu"
+            class="hidden md:hidden bg-surface-container border-t border-primary/10 px-4 py-4 flex-col gap-3">
+            <div class="flex items-center relative w-full mb-3">
+                <svg class="absolute right-3 text-on-surface-variant w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input oninput="searchProducts()"
+                    class="w-full bg-surface-container-high border border-outline-variant rounded-full py-2 pr-10 pl-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-sm"
+                    placeholder="ابحث باسم العطر، الماركة أو النوتة..." type="text">
+            </div>
+            <a class="block py-2 px-3 rounded-lg text-primary bg-primary/10 text-base font-bold"
+                href="/">الرئيسية</a>
+            <a class="block py-2 px-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-primary/5 text-base"
+                href="/services">تجربة AURA</a>
+            <a class="block py-2 px-3 rounded-lg text-on-surface-variant hover:text-primary hover:bg-primary/5 text-base"
+                href="/products">العطور</a>
+        </div>
+    </header>
+
+    <main id="main-content" class="site-main home-main flex-1 w-full">
+        <section class="home-hero relative overflow-hidden">
+            <div class="perfume-hero">
+                <div class="perfume-hero__copy">
+                    <span class="perfume-kicker">Curated fragrances · Cairo</span>
+                    <h1>عطرك مش مجرد رائحة.<br><em>دي بصمتك.</em></h1>
+                    <p>تشكيلة مختارة من العطور الراقية، من النفحات المنعشة اليومية إلى العود الدافئ والعطور المسائية المميزة. اكتشف الرائحة التي تشبهك.</p>
+                    <div class="perfume-hero__actions">
+                        <a class="perfume-primary-btn" href="/products">اكتشف المجموعة <span class="material-symbols-outlined">arrow_back</span></a>
+                        <a class="perfume-secondary-btn" href="/services">ساعدني أختار عطري</a>
+                    </div>
+                    <div class="perfume-hero__notes"><span><i></i> تغليف هدايا فاخر</span><span><i></i> شحن داخل مصر</span><span><i></i> استشارة اختيار مجانية</span></div>
+                </div>
+                <div class="perfume-hero__visual">
+                    <div class="perfume-hero__badge">FIND<br>YOUR<br>SIGNATURE</div>
+                    <div class="perfume-hero__frame">
+                        <img src="https://images.pexels.com/photos/8516167/pexels-photo-8516167.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Luxury perfume preview" fetchpriority="high">
+                        <div class="perfume-hero__caption"><div><strong>AURA Signature</strong><small>Warm · Woody · Magnetic</small></div><span>01 / 04</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="home-featured max-w-container-max mx-auto px-gutter md:px-margin-desktop">
+            <div class="perfume-section-head">
+                <div><small>Shop by collection</small><h2>اختار عالمك العطري</h2></div>
+                <p>قسمنا المجموعة بطريقة بسيطة تخليك توصل للرائحة المناسبة أسرع، سواء بتدور على عطر يومي أو بصمة مسائية قوية.</p>
+            </div>
+            <div class="perfume-category-grid">
+                <a class="perfume-category-card" href="/products?category=عطور%20نسائي"><img src="https://images.pexels.com/photos/29801749/pexels-photo-29801749.jpeg?auto=compress&cs=tinysrgb&w=900" alt="عطور نسائية" loading="lazy"><div class="perfume-category-card__copy"><small>SOFT & ELEGANT</small><h3>عطور نسائي</h3><span>زهري · فانيليا · مسك</span></div></a>
+                <a class="perfume-category-card" href="/products?category=عطور%20رجالي"><img src="https://images.pexels.com/photos/36834015/pexels-photo-36834015.jpeg?auto=compress&cs=tinysrgb&w=900" alt="عطور رجالية" loading="lazy"><div class="perfume-category-card__copy"><small>BOLD & REFINED</small><h3>عطور رجالي</h3><span>خشبي · عنبر · توابل</span></div></a>
+                <a class="perfume-category-card" href="/products?category=يونيسكس"><img src="https://images.pexels.com/photos/12053222/pexels-photo-12053222.jpeg?auto=compress&cs=tinysrgb&w=900" alt="عطور يونيسكس" loading="lazy"><div class="perfume-category-card__copy"><small>SHARED SIGNATURE</small><h3>يونيسكس</h3><span>مسك · حمضيات · نوتات نظيفة</span></div></a>
+                <a class="perfume-category-card" href="/products?category=عود%20وشرقي"><img src="https://images.pexels.com/photos/23319708/pexels-photo-23319708.jpeg?auto=compress&cs=tinysrgb&w=900" alt="عود وعطور شرقية" loading="lazy"><div class="perfume-category-card__copy"><small>DEEP & OPULENT</small><h3>عود وشرقي</h3><span>عود · زعفران · عنبر</span></div></a>
+            </div>
+        </section>
+
+        <section class="perfume-moods">
+            <div class="perfume-section-head"><div><small>Shop by mood</small><h2>إيه الإحساس اللي بتدور عليه؟</h2></div></div>
+            <div class="perfume-mood-grid">
+                <a class="perfume-mood" href="/products?q=منعش"><b>منعش</b><span>حمضيات · نيرولي · شاي أخضر</span></a>
+                <a class="perfume-mood" href="/products?q=دافئ"><b>دافئ</b><span>فانيليا · عنبر · تونكا</span></a>
+                <a class="perfume-mood" href="/products?q=خشبي"><b>خشبي</b><span>صندل · أرز · فيتيفر</span></a>
+                <a class="perfume-mood" href="/products?q=زهري"><b>زهري</b><span>ورد · ياسمين · فاوانيا</span></a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="site-footer bg-surface-container-lowest text-secondary font-mono-data text-mono-data w-full mt-auto border-t border-outline-variant">
+        <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-gutter md:px-margin-desktop py-12 w-full max-w-container-max mx-auto">
+            <div class="md:col-span-1 flex flex-col gap-4">
+                <span class="perfume-wordmark" aria-label="AURA Parfumerie"><span class="perfume-wordmark__seal">A</span><span class="perfume-wordmark__copy"><strong>AURA</strong><small>PARFUMERIE</small></span></span>
+                <p class="text-on-surface-variant text-sm mt-2 max-w-xs leading-relaxed">وجهتك لاكتشاف عطور مميزة ونفحات مختارة بعناية، مع تجربة شراء هادئة وتغليف يليق بالهدية.</p>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="text-secondary font-bold mb-2 text-lg">روابط سريعة</h4>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="/">عن AURA</a>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="/products">مجموعة العطور</a>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="/services">تجربة AURA</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="text-secondary font-bold mb-2 text-lg">خدمة العملاء</h4>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="#!" onclick="return false" aria-disabled="true">خدمة العملاء عبر واتساب</a>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="#!" onclick="return false" aria-disabled="true">الاستفسار عن العطور</a>
+                <a class="text-on-surface-variant text-base hover:text-primary transition-colors hover:underline decoration-primary"
+                    href="#!" onclick="return false" aria-disabled="true">مساعدة في اختيار العطر</a>
+            </div>
+                        <div class="flex flex-col gap-4">
+                <h4 class="text-secondary font-bold mb-2 text-lg">تواصل معنا</h4><p class="text-on-surface-variant text-xs">بيانات التواصل تجريبية وتُضاف بعد اعتماد البراند.</p>
+                <ul class="space-y-4 mb-6">
+                    <li>
+                        <a href="#!" onclick="return false" aria-disabled="true" class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors text-primary">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span class="text-sm leading-relaxed">القاهرة، مصر — عنوان المتجر يُضاف لاحقًا</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!" class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors text-primary">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <span class="text-sm font-bold dir-ltr">يُضاف لاحقًا</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!" onclick="return false" aria-disabled="true" class="footer-email-link flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors group">
+                            <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors text-primary">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span class="footer-email-copy">
+                                <span class="footer-email-label">البريد الإلكتروني</span>
+                                <span class="footer-email-address">يُضاف لاحقًا</span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="flex flex-wrap gap-2 mt-2 justify-center md:justify-start">
+                    <a href="#!" data-social="whatsapp" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[#25D366] hover:bg-[#25D366] hover:text-white shadow-md hover:shadow-lg hover:shadow-[#25D366]/30 transition-all duration-300 hover:-translate-y-1" title="واتساب" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                    </a>
+                    <a href="#!" data-social="facebook" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white shadow-md hover:shadow-lg hover:shadow-[#1877F2]/30 transition-all duration-300 hover:-translate-y-1" title="فيسبوك" aria-label="Facebook">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#!" data-social="telegram" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[#229ED9] hover:bg-[#229ED9] hover:text-white shadow-md hover:shadow-lg hover:shadow-[#229ED9]/30 transition-all duration-300 hover:-translate-y-1" title="تليجرام" aria-label="Telegram">
+                        <i class="fab fa-telegram-plane text-xl"></i>
+                    </a>
+                    <a href="#!" data-social="instagram" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-[#E1306C] hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#bc1888] hover:text-white shadow-md hover:shadow-lg hover:shadow-[#E1306C]/30 transition-all duration-300 hover:-translate-y-1" title="إنستجرام" aria-label="Instagram">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#!" data-social="tiktok" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface hover:bg-black hover:text-white shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1" title="تيك توك" aria-label="TikTok">
+                        <i class="fab fa-tiktok text-xl"></i>
+                    </a>
+                    <a href="#!" data-social="x" aria-disabled="true" class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface hover:bg-black hover:text-white shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1" title="إكس (تويتر)" aria-label="X (Twitter)">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                </div>
+                <div class="mt-4 text-center md:text-right">
+                    <p class="text-on-surface-variant/80 text-xs">© 2026 AURA PARFUMERIE | تصميم وتطوير: <a href="https://wa.me/201223493179" target="_blank" class="whitespace-nowrap text-blue-400 hover:text-green-500 font-bold transition-colors duration-300" style="text-decoration: none;">Abanoub Nasser</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+<script src="perfume-demo.js"></script>
+<script src="app.js" defer></script>
+<div class="perfume-preview-ribbon">PREVIEW · الصور والبيانات مؤقتة</div>
+</body>
+
+</html>
