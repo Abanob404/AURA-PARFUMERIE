@@ -11,6 +11,20 @@ async function adminFetch(input, init = {}) {
     options.headers = headers;
     return nativeFetch(input, options);
 }
+
+async function readApiJson(response) {
+    const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+    const raw = await response.text();
+    if (!contentType.includes('application/json')) {
+        const preview = raw.replace(/\s+/g, ' ').trim().slice(0, 140);
+        throw new Error(`API_NOT_JSON:${response.status}:${preview}`);
+    }
+    try {
+        return raw ? JSON.parse(raw) : {};
+    } catch (_) {
+        throw new Error(`API_BAD_JSON:${response.status}`);
+    }
+}
 const ADMIN_IMAGE_FALLBACK = './assets/no-image.svg';
 
 function adminSafeImageUrl(url) {
@@ -144,7 +158,7 @@ async function login() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
-        const data = await response.json();
+        const data = await readApiJson(response);
         
         if (response.ok) {
             sessionStorage.setItem('aura_current_user', JSON.stringify(data.user));
@@ -156,7 +170,14 @@ async function login() {
         }
     } catch (err) {
         console.error(err);
-        alert('فشل الاتصال بالسيرفر');
+        const msg = String(err?.message || err || '');
+        if (msg.startsWith('API_NOT_JSON:404')) {
+            alert('مسار API غير مفعّل على Vercel. ارفع النسخة الجديدة وتأكد أن مجلد api وملف vercel.json موجودان في جذر المشروع.');
+        } else if (msg.startsWith('API_NOT_JSON:')) {
+            alert('السيرفر أعاد استجابة غير صحيحة. افتح /api/health للتأكد من حالة الباك إند.');
+        } else {
+            alert('فشل الاتصال بالسيرفر. جرّب فتح /api/health لمعرفة حالة MongoDB و JWT.');
+        }
     }
 }
 window.login = login;

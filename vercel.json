@@ -3,40 +3,6 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "builds": [
-    {
-      "src": "server/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.{png,webp,svg,ico,jpg,jpeg}",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.json",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "fonts/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "assets/**",
-      "use": "@vercel/static"
-    }
-  ],
   "redirects": [
     {
       "source": "/index",
@@ -52,103 +18,103 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/p/:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/robots.txt",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/privacy",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/shipping-policy",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/returns-policy",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/authenticity",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/warranty",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/terms",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/facebook",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/facebook-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/instagram",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/instagram-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/whatsapp",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/whatsapp-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/tiktok",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/tiktok-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/telegram",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/telegram-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/youtube",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/youtube-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/qr",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/qr-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     },
     {
       "source": "/campaign-:path*",
-      "destination": "/server/index"
+      "destination": "/api/index"
     }
   ],
   "headers": [
