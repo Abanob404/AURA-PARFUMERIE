@@ -1,6 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "cleanUrls": true,
+  "trailingSlash": false,
   "builds": [
     {
       "src": "server/index.js",
@@ -35,112 +37,123 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "redirects": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/index.js"
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
     },
     {
-      "src": "/(facebook|instagram|whatsapp|tiktok|telegram|youtube|qr)(.*)",
-      "dest": "server/index.js"
+      "source": "/products_page",
+      "destination": "/products",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/campaign-(.*)",
-      "dest": "server/index.js"
+      "source": "/p/:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/(.*\\.html)",
-      "dest": "/$1"
+      "source": "/robots.txt",
+      "destination": "/server/index"
     },
     {
-      "src": "/(.*\\.js)",
-      "dest": "/$1"
+      "source": "/sitemap.xml",
+      "destination": "/server/index"
     },
     {
-      "src": "/(.*\\.css)",
-      "dest": "/$1"
+      "source": "/privacy",
+      "destination": "/server/index"
     },
     {
-      "src": "/(.*\\.(?:png|webp|svg|ico|jpg|jpeg))",
-      "dest": "/$1"
+      "source": "/shipping-policy",
+      "destination": "/server/index"
     },
     {
-      "src": "/(.*\\.json)",
-      "dest": "/$1"
+      "source": "/returns-policy",
+      "destination": "/server/index"
     },
     {
-      "src": "/fonts/(.*)",
-      "dest": "/fonts/$1"
+      "source": "/authenticity",
+      "destination": "/server/index"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
+      "source": "/warranty",
+      "destination": "/server/index"
     },
     {
-      "src": "/robots\\.txt",
-      "dest": "server/index.js"
+      "source": "/terms",
+      "destination": "/server/index"
     },
     {
-      "src": "/sitemap\\.xml",
-      "dest": "server/index.js"
+      "source": "/facebook",
+      "destination": "/server/index"
     },
     {
-      "src": "/privacy",
-      "dest": "server/index.js"
+      "source": "/facebook-:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/shipping-policy",
-      "dest": "server/index.js"
+      "source": "/instagram",
+      "destination": "/server/index"
     },
     {
-      "src": "/returns-policy",
-      "dest": "server/index.js"
+      "source": "/instagram-:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/authenticity",
-      "dest": "server/index.js"
+      "source": "/whatsapp",
+      "destination": "/server/index"
     },
     {
-      "src": "/warranty",
-      "dest": "server/index.js"
+      "source": "/whatsapp-:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/terms",
-      "dest": "server/index.js"
+      "source": "/tiktok",
+      "destination": "/server/index"
     },
     {
-      "src": "/p/(.*)",
-      "dest": "server/index.js"
+      "source": "/tiktok-:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/products",
-      "dest": "server/index.js"
+      "source": "/telegram",
+      "destination": "/server/index"
     },
     {
-      "src": "/services",
-      "dest": "/services.html"
+      "source": "/telegram-:path*",
+      "destination": "/server/index"
     },
     {
-      "src": "/admin",
-      "dest": "/admin.html"
+      "source": "/youtube",
+      "destination": "/server/index"
     },
     {
-      "src": "/",
-      "dest": "/index.html"
+      "source": "/youtube-:path*",
+      "destination": "/server/index"
+    },
+    {
+      "source": "/qr",
+      "destination": "/server/index"
+    },
+    {
+      "source": "/qr-:path*",
+      "destination": "/server/index"
+    },
+    {
+      "source": "/campaign-:path*",
+      "destination": "/server/index"
     }
   ],
   "headers": [
     {
       "source": "/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/p/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -171,12 +184,12 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "no-store"
         }
       ]
     },
     {
-      "source": "/(.*)\\.(html|js|css|json)",
+      "source": "/p/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -185,11 +198,20 @@
       ]
     },
     {
-      "source": "/(.*)\\.(png|jpg|jpeg|webp|svg|ico)",
+      "source": "/:path*.js",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, stale-while-revalidate=86400"
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/:path*.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }

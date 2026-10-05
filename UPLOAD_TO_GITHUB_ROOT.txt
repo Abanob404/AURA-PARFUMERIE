@@ -1,0 +1,24 @@
+AURA PARFUMERIE - DEPLOY NOTE
+
+ارفع محتويات هذا الملف المضغوط مباشرة إلى Root المشروع في GitHub/Vercel.
+يجب أن تكون الملفات التالية بجانب بعضها في نفس المستوى:
+- index.html
+- products.html
+- services.html
+- admin.html
+- vercel.json
+- package.json
+- server/
+
+Clean URLs:
+/
+/products
+/services
+/admin
+
+Admin:
+Username: admin
+Password: 123456
+
+مهم: حساب الإدارة يحتاج اتصال MongoDB الموجود في إعدادات Vercel (MONGODB_URI).
+إذا كان JWT_SECRET موجوداً في المشروع السابق اتركه كما هو.
