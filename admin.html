@@ -51,24 +51,64 @@
         تمت العملية بنجاح
     </div>
 
-    <!-- Login Container -->
-    <div id="loginContainer" class="flex flex-1 items-center justify-center p-6 relative">
-        <!-- Theme Toggle on Login Page -->
-        <button onclick="toggleTheme()" class="absolute top-6 left-6 p-2.5 rounded-full bg-surface-container-high border border-outline-variant text-on-surface hover:text-primary hover:border-primary/50 transition-all shadow-sm" aria-label="Toggle Theme">
-            <!-- Sun Icon (shown in dark mode) -->
-            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            <!-- Moon Icon (shown in light mode) -->
-            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-        </button>
-        <div class="glass-panel p-10 rounded-xl w-full max-w-md text-center">
-            <span class="material-symbols-outlined text-primary text-5xl mb-4">admin_panel_settings</span>
-            <h2 class="font-headline-md text-2xl text-on-surface mb-2">لوحة الإدارة</h2>
-            <p class="text-on-surface-variant text-sm mb-8">تسجيل الدخول للتحكم في المتجر</p>
-            
-            <input type="text" id="adminUsername" placeholder="اسم المستخدم..." class="w-full bg-surface-container-high border border-outline-variant rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary mb-4 text-center">
-            <input type="password" id="adminPassword" placeholder="كلمة المرور..." class="w-full bg-surface-container-high border border-outline-variant rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary mb-6 text-center" onkeypress="if(event.key==='Enter')login()">
-            <button onclick="login()" class="w-full py-3 bg-primary text-on-primary font-bold rounded hover:bg-primary/90 hover:glow-primary transition-all">دخول</button>
-        </div>
+    <!-- AURA Parfumerie Login Container -->
+    <div id="loginContainer" class="aura-admin-login flex flex-1 items-center justify-center p-6 relative">
+        <div class="aura-login-orb aura-login-orb--one" aria-hidden="true"></div>
+        <div class="aura-login-orb aura-login-orb--two" aria-hidden="true"></div>
+        <div class="aura-login-grain" aria-hidden="true"></div>
+
+        <a href="/" class="aura-login-back" aria-label="العودة إلى المتجر">
+            <span class="material-symbols-outlined">arrow_forward</span>
+            <span>العودة للمتجر</span>
+        </a>
+
+        <section class="aura-login-card" aria-labelledby="auraLoginTitle">
+            <div class="aura-login-brand">
+                <img src="logo.webp" alt="AURA Parfumerie" class="aura-login-logo">
+                <span>PRIVATE MANAGEMENT CONSOLE</span>
+            </div>
+
+            <div class="aura-login-heading">
+                <p>AURA PARFUMERIE</p>
+                <h1 id="auraLoginTitle">إدارة دار العطور</h1>
+                <span>دخول مخصص لإدارة العطور والطلبات والمخزون وتجربة المتجر.</span>
+            </div>
+
+            <div class="aura-login-form">
+                <label for="adminUsername">اسم المستخدم</label>
+                <div class="aura-login-field">
+                    <span class="material-symbols-outlined">person</span>
+                    <input type="text" id="adminUsername" value="admin" autocomplete="username" placeholder="اسم المستخدم" aria-describedby="adminLoginStatus">
+                </div>
+
+                <label for="adminPassword">كلمة المرور</label>
+                <div class="aura-login-field">
+                    <span class="material-symbols-outlined">key</span>
+                    <input type="password" id="adminPassword" autocomplete="current-password" placeholder="كلمة المرور" onkeypress="if(event.key==='Enter')login()" aria-describedby="adminLoginStatus">
+                    <button type="button" class="aura-password-toggle" onclick="toggleAdminPassword()" aria-label="إظهار أو إخفاء كلمة المرور">
+                        <span class="material-symbols-outlined" id="adminPasswordToggleIcon">visibility</span>
+                    </button>
+                </div>
+
+                <div id="adminLoginStatus" class="aura-login-status" role="status" aria-live="polite"></div>
+
+                <button id="adminLoginButton" type="button" onclick="login()" class="aura-login-submit">
+                    <span class="material-symbols-outlined">lock_open</span>
+                    <span>دخول إلى الإدارة</span>
+                </button>
+            </div>
+
+            <div class="aura-login-note">
+                <span class="material-symbols-outlined">verified_user</span>
+                <p>منطقة خاصة بالإدارة — جميع محاولات الدخول تسجل لأغراض الأمان.</p>
+            </div>
+
+            <footer class="aura-login-footer">
+                <span>AURA PARFUMERIE</span>
+                <i></i>
+                <span>Luxury fragrance management</span>
+            </footer>
+        </section>
     </div>
 
     <!-- Admin Dashboard Container -->

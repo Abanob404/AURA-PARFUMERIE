@@ -102,12 +102,19 @@ cloudinary.config({
 let connectionPromise = null;
 async function ensureDBConnection() {
   if (mongoose.connection.readyState === 1) return; // connected
+  const uri = String(process.env.MONGODB_URI || '').trim();
+  if (!uri) {
+    const err = new Error('MONGODB_URI غير مضبوط. أضف رابط MongoDB في Environment Variables.');
+    err.statusCode = 503;
+    err.code = 'DB_NOT_CONFIGURED';
+    throw err;
+  }
   if (!connectionPromise) {
-    connectionPromise = mongoose.connect(process.env.MONGODB_URI, {
+    connectionPromise = mongoose.connect(uri, {
       maxPoolSize: 5,
-      serverSelectionTimeoutMS: 15000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 15000,
+      serverSelectionTimeoutMS: 12000,
+      socketTimeoutMS: 30000,
+      connectTimeoutMS: 12000,
       bufferCommands: true
     }).then(async () => {
       console.log('DB Connected Successfully');
@@ -120,7 +127,8 @@ async function ensureDBConnection() {
   }
   await connectionPromise;
 }
-ensureDBConnection().catch(console.error);
+// Do not connect during module import. Vercel should be able to start the function and
+// answer /api/health even when the database variables are missing or temporarily down.
 
 
 // تعريف موديل مديري النظام (AdminUser Schema)
@@ -316,9 +324,9 @@ async function initDefaultAdmin() {
     // bootstrapVersion makes the requested initial credential migration happen once only:
     // an older existing `admin` account is reset to the requested password on this release,
     // but a later password change from the dashboard will NOT be reverted on cold starts.
-    const username = 'admin';
-    const password = '123456';
-    const BOOTSTRAP_VERSION = 2;
+    const username = String(process.env.ADMIN_USERNAME || 'admin').trim() || 'admin';
+    const password = String(process.env.ADMIN_PASSWORD || '123456');
+    const BOOTSTRAP_VERSION = 3;
     const existing = await AdminUser.findOne({ username });
     if (existing) {
       if (Number(existing.bootstrapVersion || 0) < BOOTSTRAP_VERSION) {
@@ -2710,8 +2718,12 @@ app.post('/api/admin/login', loginLimiter, async (req, res) => {
     await logActivity('تسجيل دخول', `تم تسجيل الدخول من ${describeAdminDevice(req)} - ${getClientIp(req) || 'IP غير معروف'}`, user.username);
     res.json({ message: 'تم تسجيل الدخول بنجاح', token: session.token, expiresAt: session.expiresAt, user: safeUser });
   } catch (err) {
-    const status = /JWT_SECRET/.test(err.message) ? 503 : 500;
-    res.status(status).json({ message: err.message || 'خطأ أثناء تسجيل الدخول' });
+    const status = Number(err?.statusCode) || (/JWT_SECRET|MONGODB_URI/.test(String(err?.message || '')) ? 503 : 500);
+    const publicMessage = status === 503
+      ? String(err?.message || 'خدمة الإدارة غير مهيأة بعد')
+      : 'تعذر تسجيل الدخول الآن. راجع حالة /api/health أو سجلات Vercel.';
+    console.error('Admin login error:', err?.message || err);
+    res.status(status).json({ message: publicMessage, code: err?.code || 'ADMIN_LOGIN_ERROR' });
   }
 });
 
@@ -2994,9 +3006,24 @@ app.get('/api/health', async (req, res) => {
     routing: 'ok',
     database: dbOk ? 'connected' : (process.env.MONGODB_URI ? 'connection_failed' : 'not_configured'),
     jwt: process.env.JWT_SECRET ? 'configured' : 'not_configured',
-    adminBootstrap: 'admin',
+    adminCredentials: (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) ? 'configured' : 'using_defaults',
+    adminBootstrap: String(process.env.ADMIN_USERNAME || 'admin'),
     ...(dbError ? { databaseMessage: dbError } : {})
   });
+});
+
+
+// API fallbacks always return JSON so the admin UI never tries to parse a Vercel/Express HTML error page.
+app.use('/api', (req, res) => {
+  res.status(404).json({ message: 'مسار API غير موجود', path: req.originalUrl });
+});
+app.use((err, req, res, next) => {
+  console.error('Unhandled API error:', err?.message || err);
+  if (res.headersSent) return next(err);
+  if (String(req.originalUrl || '').startsWith('/api/')) {
+    return res.status(Number(err?.statusCode) || 500).json({ message: 'حدث خطأ في خدمة المتجر', code: err?.code || 'API_ERROR' });
+  }
+  next(err);
 });
 
 // تشغيل السيرفر محلياً

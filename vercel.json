@@ -1,150 +1,116 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [
+  "builds": [
     {
-      "source": "/index",
-      "destination": "/",
-      "permanent": true
+      "src": "server/index.js",
+      "use": "@vercel/node"
     },
     {
-      "source": "/products_page",
-      "destination": "/products",
-      "permanent": true
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.{png,webp,svg,ico,jpg,jpeg}",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "manifest.json",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "assets/**",
+      "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/index"
+      "src": "/api/(.*)",
+      "dest": "server/index.js"
     },
     {
-      "source": "/p/:path*",
-      "destination": "/api/index"
+      "src": "/p/(.*)",
+      "dest": "server/index.js"
     },
     {
-      "source": "/robots.txt",
-      "destination": "/api/index"
+      "src": "/robots\\.txt",
+      "dest": "server/index.js"
     },
     {
-      "source": "/sitemap.xml",
-      "destination": "/api/index"
+      "src": "/sitemap\\.xml",
+      "dest": "server/index.js"
     },
     {
-      "source": "/privacy",
-      "destination": "/api/index"
+      "src": "/(privacy|shipping-policy|returns-policy|authenticity|warranty|terms)",
+      "dest": "server/index.js"
     },
     {
-      "source": "/shipping-policy",
-      "destination": "/api/index"
+      "src": "/(facebook|instagram|whatsapp|tiktok|telegram|youtube|qr)(.*)",
+      "dest": "server/index.js"
     },
     {
-      "source": "/returns-policy",
-      "destination": "/api/index"
+      "src": "/campaign-(.*)",
+      "dest": "server/index.js"
     },
     {
-      "source": "/authenticity",
-      "destination": "/api/index"
+      "src": "/products_page(?:\\.html)?",
+      "dest": "/products.html"
     },
     {
-      "source": "/warranty",
-      "destination": "/api/index"
+      "src": "/index(?:\\.html)?",
+      "dest": "/index.html"
     },
     {
-      "source": "/terms",
-      "destination": "/api/index"
+      "src": "/products",
+      "dest": "/products.html"
     },
     {
-      "source": "/facebook",
-      "destination": "/api/index"
+      "src": "/services",
+      "dest": "/services.html"
     },
     {
-      "source": "/facebook-:path*",
-      "destination": "/api/index"
+      "src": "/admin",
+      "dest": "/admin.html"
     },
     {
-      "source": "/instagram",
-      "destination": "/api/index"
+      "src": "/",
+      "dest": "/index.html"
     },
     {
-      "source": "/instagram-:path*",
-      "destination": "/api/index"
+      "src": "/(.*\\.html)",
+      "dest": "/$1"
     },
     {
-      "source": "/whatsapp",
-      "destination": "/api/index"
+      "src": "/(.*\\.js)",
+      "dest": "/$1"
     },
     {
-      "source": "/whatsapp-:path*",
-      "destination": "/api/index"
+      "src": "/(.*\\.css)",
+      "dest": "/$1"
     },
     {
-      "source": "/tiktok",
-      "destination": "/api/index"
+      "src": "/(.*\\.(?:png|webp|svg|ico|jpg|jpeg))",
+      "dest": "/$1"
     },
     {
-      "source": "/tiktok-:path*",
-      "destination": "/api/index"
+      "src": "/manifest\\.json",
+      "dest": "/manifest.json"
     },
     {
-      "source": "/telegram",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/telegram-:path*",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/youtube",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/youtube-:path*",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/qr",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/qr-:path*",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/campaign-:path*",
-      "destination": "/api/index"
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     }
   ],
   "headers": [
-    {
-      "source": "/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/products",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/services",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
     {
       "source": "/admin",
       "headers": [
@@ -155,7 +121,16 @@
       ]
     },
     {
-      "source": "/p/:path*",
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(html|js|css|json)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -164,20 +139,11 @@
       ]
     },
     {
-      "source": "/:path*.js",
+      "source": "/(.*)\\.(png|jpg|jpeg|webp|svg|ico)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/:path*.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
         }
       ]
     }
@@ -187,6 +153,5 @@
       "path": "/api/cron/backup",
       "schedule": "0 2 * * *"
     }
-  ],
-  "outputDirectory": "public"
+  ]
 }

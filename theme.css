@@ -1497,3 +1497,23 @@ body.direct-product-route #productModal{background:rgb(var(--color-background));
   .site-footer p,.site-footer a,.site-footer span{line-height:1.6}
   .site-footer .v101-policy-links{gap:8px!important;margin-top:8px!important}
 }
+
+
+/* =========================================================
+   AURA Cart V11 — viewport-safe invoice / checkout scrolling
+   Keeps the header visible and scrolls products + checkout areas independently.
+   ========================================================= */
+#cartSidebar.cart-shell{height:100dvh!important;max-height:100dvh!important;display:flex!important;flex-direction:column!important;overflow:hidden!important}
+#cartSidebar .cart-header{flex:0 0 auto!important}
+#cartSidebar .cart-items{flex:0 1 30dvh!important;min-height:96px!important;max-height:30dvh!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-width:thin;scrollbar-color:rgb(var(--color-primary)/.45) transparent}
+#cartSidebar .cart-checkout{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;scrollbar-width:thin;scrollbar-color:rgb(var(--color-primary)/.45) transparent;padding-bottom:max(22px,calc(18px + env(safe-area-inset-bottom,0px)))!important}
+#cartSidebar .cart-items::-webkit-scrollbar,#cartSidebar .cart-checkout::-webkit-scrollbar{width:6px}
+#cartSidebar .cart-items::-webkit-scrollbar-thumb,#cartSidebar .cart-checkout::-webkit-scrollbar-thumb{background:rgb(var(--color-primary)/.38);border-radius:999px}
+#cartSidebar .cart-items::-webkit-scrollbar-track,#cartSidebar .cart-checkout::-webkit-scrollbar-track{background:transparent}
+#cartSidebar .cart-checkout>div:last-child{padding-bottom:2px}
+#cartSidebar .cart-checkout>.flex.flex-col.gap-3:last-child{position:sticky;bottom:0;z-index:4;margin-top:8px;padding:10px 0 2px;background:linear-gradient(to top,rgb(var(--color-surface-container-highest)) 72%,rgb(var(--color-surface-container-highest)/0));backdrop-filter:blur(10px)}
+@media(max-width:767px){
+  #cartSidebar.cart-shell{height:min(94dvh,100dvh)!important;max-height:94dvh!important}
+  #cartSidebar .cart-items{flex-basis:24dvh!important;max-height:24dvh!important;min-height:86px!important}
+  #cartSidebar .cart-checkout{flex:1 1 auto!important;max-height:none!important;padding-bottom:max(20px,calc(16px + env(safe-area-inset-bottom,0px)))!important}
+}

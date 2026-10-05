@@ -25,6 +25,44 @@ async function readApiJson(response) {
         throw new Error(`API_BAD_JSON:${response.status}`);
     }
 }
+
+
+function setAdminLoginStatus(message = '', type = 'info') {
+    const el = document.getElementById('adminLoginStatus');
+    if (!el) return;
+    el.textContent = message;
+    el.className = `aura-login-status${message ? ` show ${type}` : ''}`;
+}
+
+function setAdminLoginBusy(busy) {
+    const btn = document.getElementById('adminLoginButton');
+    if (!btn) return;
+    btn.disabled = Boolean(busy);
+    btn.innerHTML = busy
+        ? '<span class="material-symbols-outlined animate-spin">progress_activity</span><span>جاري التحقق...</span>'
+        : '<span class="material-symbols-outlined">lock_open</span><span>دخول إلى الإدارة</span>';
+}
+
+window.toggleAdminPassword = function toggleAdminPassword() {
+    const input = document.getElementById('adminPassword');
+    const icon = document.getElementById('adminPasswordToggleIcon');
+    if (!input) return;
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    if (icon) icon.textContent = show ? 'visibility_off' : 'visibility';
+};
+
+function friendlyAdminApiError(err) {
+    const msg = String(err?.message || err || '');
+    if (msg.startsWith('API_NOT_JSON:404')) return 'خدمة الإدارة غير متاحة على هذا النشر. تأكد من رفع vercel.json ومجلد server في جذر المشروع ثم أعد النشر.';
+    if (msg.startsWith('API_NOT_JSON:500') || /A server error/i.test(msg)) return 'خدمة الإدارة لم تبدأ بشكل صحيح على Vercel. راجع متغيرات MONGODB_URI و JWT_SECRET ثم أعد النشر.';
+    if (msg.startsWith('API_NOT_JSON:')) return 'السيرفر أعاد استجابة غير متوقعة. افتح /api/health لمعرفة حالة الخدمة.';
+    if (/MONGODB_URI|قاعدة البيانات غير مهيأة|database/i.test(msg)) return 'قاعدة بيانات المتجر غير مهيأة. أضف MONGODB_URI في Environment Variables ثم أعد النشر.';
+    if (/JWT_SECRET/i.test(msg)) return 'مفتاح جلسات الإدارة غير مهيأ. أضف JWT_SECRET في Environment Variables ثم أعد النشر.';
+    if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) return 'تعذر الاتصال بخدمة الإدارة. تحقق من الاتصال ثم جرّب مرة أخرى.';
+    return msg || 'تعذر تسجيل الدخول الآن.';
+}
+
 const ADMIN_IMAGE_FALLBACK = './assets/no-image.svg';
 
 function adminSafeImageUrl(url) {
@@ -144,14 +182,16 @@ function hasPermission(perm) {
 }
 
 async function login() {
-    const username = document.getElementById('adminUsername').value.trim();
-    const password = document.getElementById('adminPassword').value.trim();
+    const username = document.getElementById('adminUsername')?.value.trim() || '';
+    const password = document.getElementById('adminPassword')?.value || '';
 
     if (!username || !password) {
-        alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+        setAdminLoginStatus('اكتب اسم المستخدم وكلمة المرور أولاً.', 'error');
         return;
     }
 
+    setAdminLoginStatus('جاري التحقق من بيانات الإدارة...', 'info');
+    setAdminLoginBusy(true);
     try {
         const response = await adminFetch(`${BASE_URL}/api/admin/login`, {
             method: 'POST',
@@ -159,27 +199,27 @@ async function login() {
             body: JSON.stringify({ username, password })
         });
         const data = await readApiJson(response);
-        
-        if (response.ok) {
-            sessionStorage.setItem('aura_current_user', JSON.stringify(data.user));
-            sessionStorage.setItem('aura_admin_token', data.token);
-            checkAuth();
-            showToast(`مرحباً ${data.user.username}!`);
-        } else {
-            alert(data.message || 'بيانات الدخول غير صحيحة!');
+        if (!response.ok) throw new Error(data.message || 'بيانات الدخول غير صحيحة');
+        if (data.mfaRequired) {
+            setAdminLoginStatus('', 'info');
+            if (typeof window.__auraOpenMfaLogin === 'function') window.__auraOpenMfaLogin(data.tempToken, data.user);
+            else setAdminLoginStatus('المصادقة الثنائية مفعلة، أعد تحميل الصفحة وحاول مرة أخرى.', 'error');
+            return;
         }
+        sessionStorage.setItem('aura_current_user', JSON.stringify(data.user));
+        sessionStorage.setItem('aura_admin_token', data.token);
+        setAdminLoginStatus('تم التحقق بنجاح، جاري فتح لوحة AURA...', 'success');
+        await checkAuth();
+        if (typeof window.injectNavAndPanels === 'function') setTimeout(() => { window.injectNavAndPanels?.(); }, 100);
+        showToast(`مرحباً ${data.user.username}!`);
     } catch (err) {
         console.error(err);
-        const msg = String(err?.message || err || '');
-        if (msg.startsWith('API_NOT_JSON:404')) {
-            alert('مسار API غير مفعّل على Vercel. ارفع النسخة الجديدة وتأكد أن مجلد api وملف vercel.json موجودان في جذر المشروع.');
-        } else if (msg.startsWith('API_NOT_JSON:')) {
-            alert('السيرفر أعاد استجابة غير صحيحة. افتح /api/health للتأكد من حالة الباك إند.');
-        } else {
-            alert('فشل الاتصال بالسيرفر. جرّب فتح /api/health لمعرفة حالة MongoDB و JWT.');
-        }
+        setAdminLoginStatus(friendlyAdminApiError(err), 'error');
+    } finally {
+        setAdminLoginBusy(false);
     }
 }
+login.__auraLuxury = true;
 window.login = login;
 
 function logout() {
@@ -3581,10 +3621,14 @@ document.addEventListener('keydown', (event) => {
   window.v9DownloadBackup=async id=>{try{const d=await api(`/api/admin/backups/cloud/${id}/link`);if(!d.url)throw new Error('تعذر إنشاء رابط التحميل');window.open(d.url,'_blank','noopener');}catch(e){alert(e.message);}};
 
   function overrideLogin(){
-    const fn=async()=>{const username=document.getElementById('adminUsername')?.value.trim()||'',password=document.getElementById('adminPassword')?.value||'';if(!username||!password)return alert('يرجى إدخال اسم المستخدم وكلمة المرور');try{const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});const d=await r.json();if(!r.ok)throw new Error(d.message||'بيانات الدخول غير صحيحة');if(d.mfaRequired){openMfaLogin(d.tempToken,d.user);return;}finishLogin(d);}catch(e){alert(e.message);}};fn.__v9=true;window.login=fn;
+    // Keep the branded, defensive AURA login handler defined at the top of this file.
+    // Older V9 code used response.json() directly, which surfaced Vercel HTML errors as
+    // "Unexpected token ... is not valid JSON" alerts.
+    if (typeof window.login === 'function' && window.login.__auraLuxury) return;
   }
   function finishLogin(d){sessionStorage.setItem('aura_current_user',JSON.stringify(d.user));sessionStorage.setItem('aura_admin_token',d.token);window.checkAuth?.();setTimeout(()=>{injectNavAndPanels();applyPermissions();},150);toast(`مرحباً ${d.user.username}!`);}
-  function openMfaLogin(tempToken,safeUser){document.getElementById('v9Mfa')?.remove();const m=document.createElement('div');m.id='v9Mfa';m.className='v9-mfa-overlay';m.innerHTML=`<div class="v9-mfa-card"><span class="material-symbols-outlined">shield_lock</span><h3>تحقق أمني</h3><p>افتح تطبيق Authenticator واكتب الرمز المكون من 6 أرقام.</p><input id="v9MfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button id="v9MfaSubmit">تأكيد الدخول</button><button class="secondary" onclick="document.getElementById('v9Mfa')?.remove()">إلغاء</button></div>`;document.body.appendChild(m);const submit=async()=>{const code=document.getElementById('v9MfaCode').value.trim();if(code.length!==6)return;try{const r=await fetch('/api/admin/login/2fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tempToken,code})});const d=await r.json();if(!r.ok)throw new Error(d.message);m.remove();finishLogin(d);}catch(e){alert(e.message);}};document.getElementById('v9MfaSubmit').onclick=submit;document.getElementById('v9MfaCode').onkeydown=e=>{if(e.key==='Enter')submit();};setTimeout(()=>document.getElementById('v9MfaCode')?.focus(),80);}
+  function openMfaLogin(tempToken,safeUser){document.getElementById('v9Mfa')?.remove();const m=document.createElement('div');m.id='v9Mfa';m.className='v9-mfa-overlay';m.innerHTML=`<div class="v9-mfa-card"><span class="material-symbols-outlined">shield_lock</span><h3>تحقق أمني</h3><p>افتح تطبيق Authenticator واكتب الرمز المكون من 6 أرقام.</p><input id="v9MfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button id="v9MfaSubmit">تأكيد الدخول</button><button class="secondary" onclick="document.getElementById('v9Mfa')?.remove()">إلغاء</button></div>`;document.body.appendChild(m);const submit=async()=>{const code=document.getElementById('v9MfaCode').value.trim();if(code.length!==6)return;try{const r=await fetch('/api/admin/login/2fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tempToken,code})});const d=await readApiJson(r);if(!r.ok)throw new Error(d.message||'تعذر التحقق');m.remove();finishLogin(d);}catch(e){alert(e.message);}};document.getElementById('v9MfaSubmit').onclick=submit;document.getElementById('v9MfaCode').onkeydown=e=>{if(e.key==='Enter')submit();};setTimeout(()=>document.getElementById('v9MfaCode')?.focus(),80);}
+  window.__auraOpenMfaLogin = openMfaLogin;
 
   function enhanceOrderModal(){if(typeof window.openOrderDetails!=='function'||window.openOrderDetails.__v9)return;const old=window.openOrderDetails;const fn=function(id){old(id);setTimeout(()=>{const order=(window.adminOrdersCache||[]).find(o=>o._id===id),box=document.getElementById('orderDetailsContent');if(!order||!box||box.querySelector('.v9-order-admin-actions'))return;const a=document.createElement('div');a.className='v9-order-admin-actions';a.innerHTML=`<button><span class="material-symbols-outlined">print</span> طباعة فاتورة</button><button onclick="switchTab('returns');setTimeout(()=>v9LoadReturns(),50)"><span class="material-symbols-outlined">assignment_return</span> المرتجعات</button>`;a.querySelector('button').onclick=()=>printAdminInvoice(order);box.prepend(a);},0);};fn.__v9=true;window.openOrderDetails=fn;}
   function printAdminInvoice(o){const rows=(o.items||[]).map(i=>`<tr><td>${esc(i.title)}${i.variant?`<small>${esc(i.variant)}</small>`:''}</td><td>${i.quantity}</td><td>${money(i.price)}</td><td>${money(i.lineTotal)}</td></tr>`).join('');const w=window.open('','_blank','noopener,width=900,height=900');if(!w)return;w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${esc(o.orderNumber)}</title><style>body{font-family:Tahoma,Arial;padding:34px;color:#111}header{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:18px}table{width:100%;border-collapse:collapse;margin:24px 0}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:right}td small{display:block;color:#666}.total{font-size:20px;font-weight:bold}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f6f6f6;padding:16px;margin:16px 0}@media print{button{display:none}}</style></head><body><header><div><h1>AURA PARFUMERIE</h1><p>فاتورة طلب إلكتروني</p></div><div><b>${esc(o.orderNumber)}</b><br>${fmt(o.createdAt)}</div></header><div class="grid"><div>العميل: <b>${esc(o.customerName)}</b></div><div>الهاتف: <b>${esc(o.customerPhone)}</b></div><div>الاستلام: <b>${esc(o.deliveryMethod==='shipping'?'شحن':'استلام من المعرض')}</b></div><div>العنوان: <b>${esc(o.customerAddress||'—')}</b></div></div><table><thead><tr><th>العطر</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${rows}</tbody></table><p>الشحن: <b>${money(o.shippingAmount)}</b></p><p>الخصم: <b>${money(o.discountAmount)}</b></p><p class="total">الإجمالي: ${money(o.total)}</p><button onclick="print()">طباعة</button><script>setTimeout(()=>print(),300)<\/script></body></html>`);w.document.close();}
