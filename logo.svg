@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="280" viewBox="0 0 900 280">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0d59a"/><stop offset="0.45" stop-color="#c69a4b"/><stop offset="1" stop-color="#8f672e"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="280" fill="none"/>
+  <g transform="translate(42 35)">
+    <rect x="32" y="66" width="132" height="128" rx="28" fill="#14110d" stroke="url(#gold)" stroke-width="5"/>
+    <rect x="68" y="32" width="60" height="36" rx="8" fill="#14110d" stroke="url(#gold)" stroke-width="5"/>
+    <path d="M78 31V14h40v17" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+    <text x="98" y="153" text-anchor="middle" font-family="Georgia,serif" font-size="74" font-weight="700" fill="url(#gold)">A</text>
+  </g>
+  <text x="245" y="130" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" letter-spacing="9" fill="#f5eee2">AURA</text>
+  <text x="250" y="181" font-family="Arial, sans-serif" font-size="25" letter-spacing="13" fill="#9b793c">PARFUMERIE</text>
+  <line x1="250" y1="208" x2="760" y2="208" stroke="#d7bd84" stroke-width="2"/>
+  <text x="250" y="245" font-family="Arial, sans-serif" font-size="20" letter-spacing="3" fill="#b9aa93">FIND YOUR SIGNATURE</text>
+</svg>
